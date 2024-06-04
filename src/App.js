@@ -1,25 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import UserTable from "./components/usersTable/UsersTable";
+import UserForm from "./components/usersForm/UserForm";
+import axios from "axios";
+import {useEffect, useState} from "react";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    const [users, setUsers] = useState([]);
+
+    const fetchUsers = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/users');
+            setUsers(response.data);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUsers()    ;
+    }, []);
+
+    return (
+        <div>
+            <h1>Таблица пользователей</h1>
+            <UserForm fetchUsers={fetchUsers} />
+            <UserTable users={users} fetchUsers={fetchUsers} />
+        </div>
+    );
+};
 
 export default App;
+
